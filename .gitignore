@@ -1,0 +1,28 @@
+# Node.js dependencies
+node_modules/
+
+# Build & logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Environment files
+.env
+*.env
+
+# Local uploads and temporary files
+uploads/
+public/uploads/
+
+# Data storage (local JSON files)
+data/*.json
+
+# System & editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Optional OS files
+desktop.ini
