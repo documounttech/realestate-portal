@@ -60,7 +60,6 @@
 
 ## 📂 Project Structure
 
-
 realestate-portal/
 
 │
@@ -136,9 +135,11 @@ Admin Access
 | `admin` | `1234` |
 
 ---
+
 ## 🚀 Setup & Run Locally
 
 ### 1️⃣ Clone the repository
+
 ```bash
 git clone https://github.com/<yourusername>/realestate-portal.git
 cd realestate-portal
@@ -165,10 +166,11 @@ This project is licensed under the **MIT License** — free for personal and com
 
 ## 💬 Contact
 
-**Venugopal Lingeshwar Chekoti**
 
+**Sailu Miltry**
 📧 sailu@documounttech.in
 
 🌐 [LinkedIn](https://linkedin.com/in/venugopal)
 
 🏢 Documount Technologies Pvt Ltd
+```
