@@ -1,0 +1,68 @@
+<div class="container py-5">
+  <h3>Edit Property</h3>
+
+  <% if (success) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+  <% if (error) { %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+
+  <form action="/edit/<%= property.id %>" method="POST" enctype="multipart/form-data" style="max-width:600px;">
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      <input type="text" name="title" class="form-control" value="<%= property.title %>" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Listing Type</label>
+      <select name="listingType" class="form-select">
+        <option value="Sale" <%= property.listingType==='Sale'?'selected':'' %>>Sale</option>
+        <option value="Rent" <%= property.listingType==='Rent'?'selected':'' %>>Rent</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Property Type</label>
+      <select name="type" class="form-select">
+        <option <%= property.type==='Apartment'?'selected':'' %>>Apartment</option>
+        <option <%= property.type==='House'?'selected':'' %>>House</option>
+        <option <%= property.type==='Plot'?'selected':'' %>>Plot</option>
+        <option <%= property.type==='Commercial'?'selected':'' %>>Commercial</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Price (₹)</label>
+      <input type="number" name="price" class="form-control" value="<%= property.price %>" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Location</label>
+      <input type="text" name="location" class="form-control" value="<%= property.location %>" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea name="description" class="form-control" rows="3"><%= property.description %></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Replace Photos (optional)</label>
+      <input type="file" name="photos" multiple class="form-control" accept="image/*">
+      <small class="text-muted">Leave empty to keep existing photos.</small>
+    </div>
+
+    <!-- Show existing images -->
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <% if (property.photos && property.photos.length > 0) { %>
+        <% property.photos.forEach(p => { %>
+          <img src="<%= p %>" alt="Property photo" style="width:100px;height:100px;object-fit:cover;border-radius:8px;">
+        <% }) %>
+      <% } %>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save Changes</button>
+    <a href="/dashboard" class="btn btn-secondary ms-2">Cancel</a>
+  </form>
+</div>

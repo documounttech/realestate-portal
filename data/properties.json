@@ -1,0 +1,103 @@
+[
+  {
+    "id": "507b70b5-4862-4a07-8f21-605f811874a9",
+    "title": "2BHK Flat",
+    "type": "Apartment",
+    "price": "4500000",
+    "location": "Pangra",
+    "description": "2BHK flat for sale",
+    "date": "2025-11-05T10:46:03.184Z"
+  },
+  {
+    "id": "f2154cd6-23a3-4417-8b5f-1b615367f13e",
+    "title": "2BHK",
+    "type": "Apartment",
+    "price": "4600000",
+    "location": "khalilwadi",
+    "description": "2BHK newly constructed",
+    "photo": "/uploads/1762340663834-2bhk.jpeg",
+    "userId": "22bf0f75-c402-4ca4-b594-d2661ae048d0",
+    "userName": "venu",
+    "date": "2025-11-05T11:04:23.839Z"
+  },
+  {
+    "id": "1512f6db-609e-4d44-a0a1-dbce5886e088",
+    "title": "2BHK Apartment",
+    "type": "Apartment",
+    "price": 4500000,
+    "location": "Hyderabad",
+    "description": "Semi-furnished flat in Kukatpally with lift and parking.",
+    "photo": "/uploads/flat1.jpg",
+    "date": "2025-11-05T11:48:09.369Z"
+  },
+  {
+    "id": "fb844355-f7f2-4625-9445-d05db5ea6ddf",
+    "title": "Commercial Shop",
+    "type": "Commercial",
+    "price": 9000000,
+    "location": "Nizamabad",
+    "description": "Corner shop on main road near bus stand.",
+    "photo": "/uploads/shop1.jpg",
+    "date": "2025-11-05T11:48:09.369Z"
+  },
+  {
+    "id": "0aa9b949-d577-4424-aa29-14706edd7c2d",
+    "title": "Independent Villa",
+    "type": "House",
+    "price": 12500000,
+    "location": "Warangal",
+    "description": "Luxury villa with garden and modular kitchen.",
+    "photo": "/uploads/villa1.jpg",
+    "date": "2025-11-05T11:48:09.369Z"
+  },
+  {
+    "id": "d607108d-bddf-4c9f-914d-646f51b39527",
+    "title": "2BHK Apartment",
+    "type": "Apartment",
+    "price": 4500000,
+    "location": "Hyderabad",
+    "description": "Semi-furnished flat in Kukatpally with lift and parking.",
+    "photo": "/uploads/flat1.jpg",
+    "date": "2025-11-05T13:02:10.109Z"
+  },
+  {
+    "id": "c1f3fdf6-12da-468c-af58-c6c01bf05e91",
+    "title": "Commercial Shop",
+    "type": "Commercial",
+    "price": 9000000,
+    "location": "Nizamabad",
+    "description": "Corner shop on main road near bus stand.",
+    "photo": "/uploads/shop1.jpg",
+    "date": "2025-11-05T13:02:10.109Z"
+  },
+  {
+    "id": "f2a1df8f-8682-45a4-9695-7648bf7f264c",
+    "title": "Independent Villa",
+    "type": "House",
+    "price": 25000,
+    "location": "Warangal",
+    "description": "Luxury villa for rent with garden and modular kitchen.",
+    "photo": "/uploads/villa1.jpg",
+    "date": "2025-11-05T13:02:10.109Z"
+  },
+  {
+    "id": "ec938473-ea66-4139-a046-aab9ab88fde0",
+    "title": "1BHK Flat",
+    "type": "Apartment",
+    "price": 18000,
+    "location": "Karimnagar",
+    "description": "Compact flat ideal for small families near market area.",
+    "photo": "/uploads/flat2.jpg",
+    "date": "2025-11-05T13:02:10.109Z"
+  },
+  {
+    "id": "7f1a41d1-ff92-46ff-99e8-b845c11cae0e",
+    "title": "Office Space",
+    "type": "Commercial",
+    "price": 15000000,
+    "location": "Secunderabad",
+    "description": "Office space with central AC and conference hall.",
+    "photo": "/uploads/office.jpg",
+    "date": "2025-11-05T13:02:10.109Z"
+  }
+]

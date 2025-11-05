@@ -1,0 +1,224 @@
+/* ---------- GLOBAL STYLES ---------- */
+body {
+  background-color: #F8F9FC;
+  color: #212529;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+}
+
+.navbar {
+  background-color: #004274 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.navbar-brand, .nav-link {
+  color: #fff !important;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: #F4A100 !important;
+}
+
+.btn-primary {
+  background-color: #004274;
+  border-color: #004274;
+}
+
+.btn-primary:hover {
+  background-color: #032d4d;
+  border-color: #032d4d;
+}
+
+.btn-warning {
+  background-color: #F4A100;
+  border: none;
+  color: #fff;
+}
+
+.btn-warning:hover {
+  background-color: #d89100;
+}
+
+/* ---------- HERO SECTION ---------- */
+.hero-section {
+  position: relative;
+  text-align: center;
+  height: 70vh;
+  background: linear-gradient(rgba(0, 66, 116, 0.7), rgba(0, 66, 116, 0.7)),
+              url('/images/hero-bg.jpg') center/cover no-repeat;
+  color: #fff;
+}
+
+.hero-section h1 {
+  font-weight: 700;
+  font-size: 3rem;
+  text-shadow: 0 3px 6px rgba(0,0,0,0.4);
+}
+
+.hero-section p {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- FEATURED PROPERTIES ---------- */
+.card {
+  border: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  background-color: #fff;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.card-body h5 {
+  color: #004274;
+  font-weight: 600;
+}
+
+/* ---------- SECTION TITLES ---------- */
+h2.section-title {
+  color: #004274;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+
+h2.section-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background-color: #F4A100;
+  margin: 0.5rem auto 0;
+  border-radius: 2px;
+}
+
+/* ---------- HOW IT WORKS ---------- */
+.how-it-works {
+  background-color: #E9ECEF;
+  padding: 60px 0;
+}
+
+.how-it-works i {
+  color: #F4A100;
+}
+
+/* ---------- CALL TO ACTION ---------- */
+.call-to-action {
+  background: linear-gradient(rgba(0, 66, 116, 0.8), rgba(0, 66, 116, 0.8)),
+              url('/images/calltoaction-bg.jpg') center/cover no-repeat;
+  color: #fff;
+  text-align: center;
+  padding: 80px 0;
+}
+
+.call-to-action h2 {
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.call-to-action p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+/* ---------- FOOTER ---------- */
+footer {
+  background-color: #004274;
+  color: #ffffff;
+  padding: 25px 0;
+  text-align: center;
+}
+
+footer a {
+  color: #F4A100;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- BLOG CARDS ---------- */
+.blog-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: 0.3s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 18px rgba(0,0,0,0.2);
+}
+
+.blog-card h5 a {
+  color: #004274;
+  text-decoration: none;
+}
+
+.blog-card h5 a:hover {
+  color: #F4A100;
+}
+
+/* ---------- FORM STYLING ---------- */
+.form-control, .form-select {
+  border-radius: 8px;
+}
+
+.btn {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.property-card {
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.property-card .badge {
+  font-size: 0.85rem;
+  padding: 0.4em 0.7em;
+  border-radius: 6px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.property-image-gallery img {
+  border-radius: 10px;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.property-image-gallery img:hover {
+  transform: scale(1.02);
+}
+
+.carousel-item img {
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.carousel-indicators [data-bs-target] {
+  background-color: #004274;
+}
+
+.container.text-center img {
+  opacity: 0.9;
+}
+.container.text-center h2 {
+  font-size: 2rem;
+}
+.container.text-center p {
+  font-size: 1.1rem;
+}

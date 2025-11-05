@@ -1,0 +1,49 @@
+<h3>Admin Dashboard</h3>
+<a href="/admin/logout" class="btn btn-secondary btn-sm mb-3">Logout</a>
+<a href="/admin/import" class="btn btn-outline-primary btn-sm mb-3">Import from Excel</a>
+<table class="table table-bordered">
+  <thead class="table-dark">
+    <tr>
+      <th>Title</th>
+      <th>Type</th>
+      <th>Price</th>
+      <th>Location</th>
+      <th>Date Added</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (properties.length===0) { %>
+      <tr>
+        <td colspan="6">No properties found.</td>
+      </tr>
+      <% } else { %>
+        <% properties.forEach(p=> { %>
+          <tr>
+            <td>
+              <%= p.title %>
+            </td>
+            <td>
+              <%= p.type %>
+            </td>
+            <td>₹<%= p.price %>
+            </td>
+            <td>
+              <%= p.location %>
+            </td>
+            <td>
+              <%= new Date(p.date).toLocaleDateString() %>
+            </td>
+            <td>
+              <a href="/property/<%= p.id %>" class="btn btn-sm btn-info">View</a>
+              <a href="/edit/<%= p.id %>" class="btn btn-outline-warning btn-sm">
+                <i class="bi bi-pencil"></i> Edit
+              </a>
+              <a href="/admin/delete/<%= p.id %>" class="btn btn-sm btn-danger"
+                onclick="return confirm('Delete this property?')">Delete</a>
+            </td>
+          </tr>
+          <% }) %>
+            <% } %>
+  </tbody>
+</table>

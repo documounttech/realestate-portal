@@ -1,0 +1,47 @@
+<h3>Add Property</h3>
+<form action="/add" method="POST" enctype="multipart/form-data" class="mt-3">
+  <div class="mb-3">
+    <label class="form-label">Title</label>
+    <input type="text" name="title" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Listing Type</label>
+    <select name="listingType" class="form-select">
+      <option>Sale</option>
+      <option>Rent</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Property Type</label>
+    <select name="type" class="form-select">
+      <option>Apartment</option>
+      <option>House</option>
+      <option>Plot</option>
+      <option>Commercial</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Price (₹)</label>
+    <input type="number" name="price" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Location</label>
+    <input type="text" name="location" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Description</label>
+    <textarea name="description" class="form-control" rows="3"></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Property Photos</label>
+    <input type="file" name="photos" multiple class="form-control" accept="image/*">
+    <small class="text-muted">You can select multiple images.</small>
+  </div>
+  <button type="submit" class="btn btn-success">Submit</button>
+</form>

@@ -1,0 +1,13 @@
+<h3>Latest Blogs</h3>
+<div class="row mt-4">
+  <% blogs.forEach(b => { %>
+    <div class="col-md-6 mb-4">
+      <div class="card p-3 shadow-sm">
+        <h5><a href="/blog/<%= b.id %>"><%= b.title %></a></h5>
+        <small class="text-muted"><%= b.date %> • <%= b.author %></small>
+        <p><%= b.content.substring(0,120) %>...</p>
+        <a href="/blog/<%= b.id %>" class="btn btn-outline-primary btn-sm">Read More</a>
+      </div>
+    </div>
+  <% }) %>
+</div>

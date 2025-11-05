@@ -1,0 +1,89 @@
+<div class="container py-5">
+    <div class="row">
+        <!-- IMAGE SECTION -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <img src="<%= property.photo %>" alt="<%= property.title %>" class="img-fluid rounded"
+                    style="width:100%; height:400px; object-fit:cover;">
+            </div>
+        </div>
+
+        <!-- DETAILS SECTION -->
+        <div class="col-md-6">
+            <h2 class="fw-bold text-primary mb-3">
+                <%= property.title %>
+            </h2>
+            <p class="mb-1 text-muted"><i class="bi bi-geo-alt"></i>
+                <%= property.location %>
+            </p>
+            <span
+                class="badge <%= property.listingType && property.listingType.toLowerCase()==='rent' ? 'bg-warning text-dark' : 'bg-primary' %>">
+                <%= property.listingType ? property.listingType.toUpperCase() : 'SALE' %>
+            </span>
+            <p class="fs-4 mt-3 text-success fw-semibold">
+                ₹<%= property.price.toLocaleString() %>
+                    <% if (property.listingType && property.listingType.toLowerCase()==='rent' ) { %>/month<% } %>
+            </p>
+            <hr>
+            <h5 class="fw-bold mb-2">Property Details</h5>
+            <ul class="list-unstyled">
+                <li><b>Type:</b>
+                    <%= property.type %>
+                </li>
+                <li><b>Posted on:</b>
+                    <%= new Date(property.date).toLocaleDateString() %>
+                </li>
+                <li><b>Description:</b>
+                    <%= property.description %>
+                </li>
+            </ul>
+
+            <a href="https://www.google.com/maps/search/<%= encodeURIComponent(property.location) %>" target="_blank"
+                class="btn btn-outline-success mt-3">
+                <i class="bi bi-geo-alt-fill"></i> View on Map
+            </a>
+        </div>
+        <div class="col-md-6">
+            <% if (property.photos && property.photos.length> 1) { %>
+                <!-- Bootstrap Carousel -->
+                <div id="propertyCarousel" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <% property.photos.forEach((photo, idx)=> { %>
+                            <button type="button" data-bs-target="#propertyCarousel" data-bs-slide-to="<%= idx %>"
+                                class="<%= idx === 0 ? 'active' : '' %>" aria-current="<%= idx === 0 %>"
+                                aria-label="Slide <%= idx+1 %>"></button>
+                            <% }) %>
+                    </div>
+
+                    <div class="carousel-inner rounded">
+                        <% property.photos.forEach((photo, idx)=> { %>
+                            <div class="carousel-item <%= idx === 0 ? 'active' : '' %>">
+                                <img src="<%= photo %>" class="d-block w-100" alt="Property image"
+                                    style="height:400px;object-fit:cover;border-radius:10px;">
+                            </div>
+                            <% }) %>
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                <% } else { %>
+                    <!-- Single Image Fallback -->
+                    <img src="<%= property.mainPhoto || property.photo %>" alt="<%= property.title %>"
+                        class="img-fluid rounded shadow-sm" style="width:100%;height:400px;object-fit:cover;">
+                    <% } %>
+        </div>
+
+    </div>
+
+    <!-- OPTIONAL RELATED SECTION -->
+    <div class="mt-5">
+        <a href="/" class="btn

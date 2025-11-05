@@ -1,0 +1,49 @@
+<h3>Welcome, <%= user.name %>!</h3>
+<a href="/add" class="btn btn-success btn-sm mb-3">+ Add New Property</a>
+<a href="/logout" class="btn btn-secondary btn-sm mb-3">Logout</a>
+
+<h5>Your Properties</h5>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Type</th>
+      <th>Price</th>
+      <th>Location</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (properties.length===0) { %>
+      <tr>
+        <td colspan="5">You have not listed any properties yet.</td>
+      </tr>
+      <% } else { %>
+        <% properties.forEach(p=> { %>
+          <tr>
+            <td>
+              <%= p.title %>
+            </td>
+            <td>
+              <%= p.type %>
+            </td>
+            <td>₹<%= p.price %>
+            </td>
+            <td>
+              <%= p.location %>
+            </td>
+            <td>
+              <%= new Date(p.date).toLocaleDateString() %>
+            </td>
+            <td>
+              <span class="badge <%= p.listingType === 'Rent'
+        ? 'bg-warning text-dark'
+        : 'bg-primary' %>">
+                <%= p.listingType %>
+              </span>
+            </td>
+          </tr>
+          <% }) %>
+            <% } %>
+  </tbody>
+</table>

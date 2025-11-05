@@ -1,0 +1,31 @@
+<h3>Contact Us</h3>
+<p>Have questions, suggestions, or partnership proposals? We’d love to hear from you.</p>
+
+<form action="/contact" method="POST" class="mt-4" style="max-width:600px;">
+  <% if (success) { %>
+    <div class="alert alert-success">Thank you for contacting us! We’ll get back to you soon.</div>
+  <% } %>
+
+  <div class="mb-3">
+    <label class="form-label">Full Name</label>
+    <input type="text" name="name" class="form-control" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Email</label>
+    <input type="email" name="email" class="form-control" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Message</label>
+    <textarea name="message" rows="4" class="form-control" required></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Send Message</button>
+</form>
+
+<div class="mt-5">
+  <h5>Our Office</h5>
+  <p>RealEstate Portal Pvt Ltd<br>
+     Road No. 12, Banjara Hills<br>
+     Hyderabad – Telangana<br>
+     Email: support@realestateportal.in<br>
+     Phone: +91 90000 00000</p>
+</div>

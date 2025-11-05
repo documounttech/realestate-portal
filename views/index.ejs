@@ -1,0 +1,156 @@
+<h2 class="mb-4">Available Properties</h2>
+<!-- HERO SECTION -->
+<section class="hero-section text-center text-light d-flex align-items-center justify-content-center"
+  style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+  url('/images/hero-bg.jpg') center/cover no-repeat; height: 70vh;">
+  <div class="container">
+    <h1 class="display-4 fw-bold mb-3">Find Your Dream Property</h1>
+    <p class="lead mb-4">Buy, sell or rent properties easily and securely.</p>
+
+    <!-- Location Filter Form -->
+    <form method="GET" action="/" class="row g-2 justify-content-center">
+      <div class="col-md-3">
+        <select name="city" class="form-select">
+          <option value="">All Locations</option>
+          <% uniqueCities.forEach(city => { %>
+            <option value="<%= city %>" <%= city === cityFilter ? "selected" : "" %>><%= city %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-warning fw-semibold">Search</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- FEATURED PROPERTIES -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center mb-5 fw-bold">Featured Properties</h2>
+    <div class="row">
+      <% if (properties.length === 0) { %>
+        <p class="text-center">No properties listed yet.</p>
+      <% } else { %>
+        <% properties.slice(0,6).forEach(p => { %>
+          <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+              <img src="<%= p.photo %>" class="card-img-top" alt="Property"
+                   style="height:230px;object-fit:cover;border-radius:8px 8px 0 0;">
+              <div class="card-body">
+                <h5 class="fw-bold"><%= p.title %></h5>
+                <p class="mb-1"><i class="bi bi-geo-alt"></i> <%= p.location %></p>
+                <p class="text-muted mb-2"><%= p.type %></p>
+                <p class="fw-semibold text-primary">₹<%= p.price.toLocaleString() %></p>
+                <a href="/property/<%= p.id %>" class="btn btn-outline-primary btn-sm">View Details</a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-5 fw-bold">How It Works</h2>
+    <div class="row text-center">
+      <div class="col-md-4 mb-4">
+        <i class="bi bi-house-door display-4 text-primary mb-3"></i>
+        <h5 class="fw-bold">Search Property</h5>
+        <p>Browse thousands of listings by city, type, or price range to find your perfect match.</p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <i class="bi bi-pencil-square display-4 text-success mb-3"></i>
+        <h5 class="fw-bold">Post Your Property</h5>
+        <p>Registered users can list properties for free, upload photos, and manage inquiries easily.</p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <i class="bi bi-people display-4 text-warning mb-3"></i>
+        <h5 class="fw-bold">Connect with Buyers</h5>
+        <p>Our platform connects you directly with genuine buyers and tenants.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALL TO ACTION -->
+<section class="py-5 text-center text-light"
+  style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+  url('/images/calltoaction-bg.jpg') center/cover no-repeat;">
+  <div class="container">
+    <h2 class="fw-bold mb-3">Ready to List Your Property?</h2>
+    <p class="mb-4">Join thousands of property owners and agents who trust RealEstate Portal.</p>
+    <% if (!session || !session.user) { %>
+      <a href="/register" class="btn btn-warning btn-lg me-2">Register Now</a>
+      <a href="/login" class="btn btn-outline-light btn-lg">Login</a>
+    <% } else { %>
+      <a href="/add" class="btn btn-warning btn-lg">Post Your Property</a>
+    <% } %>
+  </div>
+</section>
+
+<!-- LATEST BLOGS PREVIEW -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center mb-5 fw-bold">Latest Blogs</h2>
+    <div class="row">
+      <% if (blogs && blogs.length > 0) { %>
+        <% blogs.slice(0,3).forEach(b => { %>
+          <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+              <div class="card-body">
+                <h5><a href="/blog/<%= b.id %>" class="text-dark fw-bold"><%= b.title %></a></h5>
+                <p class="text-muted"><small><%= b.date %></small></p>
+                <p><%= b.content.substring(0,120) %>...</p>
+                <a href="/blog/<%= b.id %>" class="btn btn-outline-primary btn-sm">Read More</a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p class="text-center">No blogs available yet.</p>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+
+<form method="GET" action="/" class="mb-4">
+  <div class="row g-2 align-items-center">
+    <div class="col-md-3">
+      <select name="city" class="form-select">
+        <option value="">All Locations</option>
+        <% uniqueCities.forEach(city => { %>
+          <option value="<%= city %>" <%= city === cityFilter ? "selected" : "" %>><%= city %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary">Filter</button>
+    </div>
+  </div>
+</form>
+
+<div class="row">
+  <% if (properties.length === 0) { %>
+    <p>No properties found for this location.</p>
+  <% } else { %>
+    <% properties.forEach(p => { %>
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+          <img src="<%= p.photo %>" class="card-img-top" alt="Property">
+          <div class="card-body">
+            <h5><%= p.title %></h5>
+            <p><b>Type:</b> <%= p.type %></p>
+            <p><b>Location:</b> <%= p.location %></p>
+            <p><b>Price:</b> ₹<%= p.price %></p>
+            <a href="/property/<%= p.id %>" class="btn btn-primary btn-sm">View</a>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  <% } %>
+</div>

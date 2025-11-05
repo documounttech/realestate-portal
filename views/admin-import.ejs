@@ -1,0 +1,17 @@
+<h3>Import Properties from Excel</h3>
+
+<% if (success) { %>
+  <div class="alert alert-success"><%= success %></div>
+<% } %>
+<% if (error) { %>
+  <div class="alert alert-danger"><%= error %></div>
+<% } %>
+
+<form action="/admin/import" method="POST" enctype="multipart/form-data" style="max-width:500px;">
+  <div class="mb-3">
+    <label class="form-label">Select Excel File</label>
+    <input type="file" name="excelFile" class="form-control" accept=".xlsx,.xls" required>
+    <small class="text-muted">Make sure your Excel columns include Title, Type, Price, Location, Description, and Photo (optional URL).</small>
+  </div>
+  <button type="submit" class="btn btn-primary">Import</button>
+</form>
