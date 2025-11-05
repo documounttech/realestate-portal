@@ -1,3 +1,5 @@
+// server.js (ESM)
+
 import express from "express";
 import bodyParser from "body-parser";
 import { v4 as uuidv4 } from "uuid";
@@ -9,19 +11,21 @@ import path from "path";
 import bcrypt from "bcryptjs";
 import xlsx from "xlsx";
 
-
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
+// -------------------- DATA FILES --------------------
 const dataDir = "./data";
-
-// ✅ Add these three lines (in this exact order)
 const userFile = path.join(dataDir, "users.json");
 const propertyFile = path.join(dataDir, "properties.json");
 const blogFile = path.join(dataDir, "blogs.json");
 
+// Ensure data files exist with empty arrays
+for (const f of [userFile, propertyFile, blogFile]) {
+  if (!fs.existsSync(f)) fs.outputJSONSync(f, []);
+}
 
-// --- SETUP ---
+// -------------------- APP SETUP --------------------
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set("layout", "layout");
@@ -35,27 +39,35 @@ app.use(
   })
 );
 
+// Make session available in all views
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
 
-const uploadDir = "./uploads";
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
-// Multer storage config
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "public/uploads/"),
+// -------------------- UPLOADS (IMAGES + EXCEL) --------------------
+// Ensure upload folders exist
+const publicUploadsDir = "public/uploads";
+const tempUploadsDir = "uploads";
+fs.ensureDirSync(publicUploadsDir);
+fs.ensureDirSync(tempUploadsDir);
+
+// Multer storage for property images (saved in /public/uploads)
+const imageStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, publicUploadsDir),
   filename: (req, file, cb) =>
     cb(null, Date.now() + "-" + file.originalname.replace(/\s+/g, "_")),
 });
-const upload = multer({ storage });
+const uploadImages = multer({ storage: imageStorage });
 
-// Excel file upload setup
+// Multer storage for Excel (temp in /uploads)
 const excelStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname)
+  destination: (req, file, cb) => cb(null, tempUploadsDir),
+  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
 const uploadExcel = multer({ storage: excelStorage });
 
-// --- JSON UTILITIES ---
+// -------------------- JSON HELPERS --------------------
 const loadJSON = (file) => {
   try {
     return JSON.parse(fs.readFileSync(file));
@@ -67,85 +79,15 @@ const saveJSON = (file, data) => {
   fs.writeFileSync(file, JSON.stringify(data, null, 2));
 };
 
+// =====================================================
+//                      ROUTES
+// =====================================================
 
-app.use((req, res, next) => {
-  res.locals.session = req.session;
-  next();
-});
-
-// --- ROUTES ---
-
-// =========== AUTH ROUTES ===========
-
-// Show Excel upload form
-app.get("/admin/import", (req, res) => {
-  if (!req.session.admin) return res.redirect("/admin/login");
-  res.render("admin-import", { success: null, error: null });
-});
-
-// Handle Excel upload and import
-app.post("/admin/import", uploadExcel.single("excelFile"), (req, res) => {
-  if (!req.session.admin) return res.redirect("/admin/login");
-  try {
-    const workbook = xlsx.readFile(req.file.path);
-    const sheetName = workbook.SheetNames[0];
-    const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-
-    let properties = loadJSON(propertyFile);
-    let added = 0;
-
-    data.forEach((row) => {
-      if (row.Title && row.Price && row.Location) {
-        properties.push({
-          id: uuidv4(),
-          title: row.Title,
-          type: row.Type || "Apartment",
-          price: row.Price,
-          location: row.Location,
-          description: row.Description || "",
-          photo: row.Photo || "/images/property.jpg",
-          date: new Date().toISOString(),
-        });
-        added++;
-      }
-    });
-
-    saveJSON(propertyFile, properties);
-    fs.unlinkSync(req.file.path); // remove uploaded file
-    res.render("admin-import", {
-      success: `${added} properties imported successfully.`,
-      error: null,
-    });
-  } catch (err) {
-    console.error(err);
-    res.render("admin-import", {
-      success: null,
-      error: "Error reading Excel file. Please check format.",
-    });
-  }
-});
-
-
-// Registration page
+// -------------------- AUTH (USER) --------------------
 app.get("/register", (req, res) => {
   res.render("register", { error: null, success: null });
 });
 
-// Properties for Sale
-app.get("/buy", (req, res) => {
-  const properties = loadJSON(propertyFile);
-  const saleProps = properties.filter(p => (p.listingType || "Sale").toLowerCase() === "sale");
-  res.render("listings", { title: "Properties for Sale", properties: saleProps });
-});
-
-// Properties for Rent
-app.get("/rent", (req, res) => {
-  const properties = loadJSON(propertyFile);
-  const rentProps = properties.filter(p => (p.listingType || "").toLowerCase() === "rent");
-  res.render("listings", { title: "Properties for Rent", properties: rentProps });
-});
-
-// Handle registration
 app.post("/register", (req, res) => {
   const { name, email, password } = req.body;
   const users = loadJSON(userFile);
@@ -155,25 +97,22 @@ app.post("/register", (req, res) => {
   }
 
   const hashedPassword = bcrypt.hashSync(password, 10);
-  const newUser = {
+  users.push({
     id: uuidv4(),
     name,
     email,
     password: hashedPassword,
     date: new Date().toISOString(),
-  };
-  users.push(newUser);
+  });
   saveJSON(userFile, users);
 
   res.render("register", { success: "Registration successful! Please log in.", error: null });
 });
 
-// Login page
 app.get("/login", (req, res) => {
   res.render("login", { error: null });
 });
 
-// Handle login
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   const users = loadJSON(userFile);
@@ -187,46 +126,42 @@ app.post("/login", (req, res) => {
   res.redirect("/dashboard");
 });
 
-// Logout
 app.get("/logout", (req, res) => {
-  req.session.destroy();
-  res.redirect("/");
+  req.session.destroy(() => res.redirect("/"));
 });
 
-// User dashboard
 app.get("/dashboard", (req, res) => {
   if (!req.session.user) return res.redirect("/login");
-  const properties = loadJSON(propertyFile).filter(
-    (p) => p.userId === req.session.user.id
-  );
+  const properties = loadJSON(propertyFile).filter((p) => p.userId === req.session.user.id);
   res.render("dashboard", { user: req.session.user, properties });
 });
 
-// --- Restrict property adding to logged-in users ---
+// -------------------- PROPERTY: ADD --------------------
 app.get("/add", (req, res) => {
   if (!req.session.user) return res.redirect("/login");
   res.render("add-property");
 });
 
-// Posting New property
-app.post("/add", upload.single("photo"), (req, res) => {
+// Supports multiple images (for carousel) – name="photos"
+app.post("/add", uploadImages.array("photos", 6), (req, res) => {
   if (!req.session.user) return res.redirect("/login");
 
   const { title, type, price, location, description, listingType } = req.body;
-  const photo = req.file ? "/uploads/" + req.file.filename : "/images/property.jpg";
+  const photos = (req.files || []).map((f) => "/uploads/" + f.filename);
+  const mainPhoto = photos[0] || "/images/property.jpg";
 
   const properties = loadJSON(propertyFile);
   properties.push({
     id: uuidv4(),
     title,
     type,
-    price,
+    price: Number(price),
     location,
     description,
-    listingType: listingType || "Sale",   // ✅ added
-    photo,
+    listingType: listingType || "Sale", // Sale | Rent
+    photos,
+    mainPhoto,
     userId: req.session.user.id,
-    listingType: row.ListingType || "Sale",  // ✅ support rentals
     userName: req.session.user.name,
     date: new Date().toISOString(),
   });
@@ -235,15 +170,15 @@ app.post("/add", upload.single("photo"), (req, res) => {
   res.redirect("/dashboard");
 });
 
-// Show edit property form
+// -------------------- PROPERTY: EDIT --------------------
 app.get("/edit/:id", (req, res) => {
   if (!req.session.user && !req.session.admin) return res.redirect("/login");
 
   const properties = loadJSON(propertyFile);
   const property = properties.find((p) => p.id === req.params.id);
-  if (!property) return res.status(404).send("Property not found");
+  if (!property) return res.status(404).render("property-notfound");
 
-  // Restrict editing to property owner or admin
+  // Only owner or admin
   if (!req.session.admin && req.session.user.id !== property.userId) {
     return res.status(403).send("Unauthorized access");
   }
@@ -251,39 +186,38 @@ app.get("/edit/:id", (req, res) => {
   res.render("edit-property", { property, success: null, error: null });
 });
 
-
-// Handle property update
-app.post("/edit/:id", upload.array("photos", 6), (req, res) => {
+app.post("/edit/:id", uploadImages.array("photos", 6), (req, res) => {
   if (!req.session.user && !req.session.admin) return res.redirect("/login");
 
-  let properties = loadJSON(propertyFile);
+  const properties = loadJSON(propertyFile);
   const idx = properties.findIndex((p) => p.id === req.params.id);
-  if (idx === -1) return res.status(404).send("Property not found");
+  if (idx === -1) return res.status(404).render("property-notfound");
 
-  const property = properties[idx];
-  if (!req.session.admin && req.session.user.id !== property.userId) {
+  const current = properties[idx];
+
+  // Only owner or admin
+  if (!req.session.admin && req.session.user.id !== current.userId) {
     return res.status(403).send("Unauthorized access");
   }
 
   const { title, type, price, location, description, listingType } = req.body;
 
-  // If new photos uploaded, replace existing
-  let photos = property.photos || [];
+  // If new photos uploaded, replace
+  let photos = current.photos || [];
   if (req.files && req.files.length > 0) {
     photos = req.files.map((f) => "/uploads/" + f.filename);
   }
 
-  // Update property fields
   properties[idx] = {
-    ...property,
+    ...current,
     title,
     type,
-    price,
+    price: Number(price),
     location,
     description,
-    listingType,
+    listingType: listingType || current.listingType || "Sale",
     photos,
-    mainPhoto: photos[0] || property.mainPhoto,
+    mainPhoto: photos[0] || current.mainPhoto || "/images/property.jpg",
     dateModified: new Date().toISOString(),
   };
 
@@ -295,94 +229,63 @@ app.post("/edit/:id", upload.array("photos", 6), (req, res) => {
   });
 });
 
+// -------------------- PROPERTY: DETAILS --------------------
+app.get("/property/:id", (req, res) => {
+  const properties = loadJSON(propertyFile);
+  const property = properties.find((p) => p.id === req.params.id);
+  if (!property) return res.status(404).render("property-notfound");
+  res.render("property-details", { property });
+});
 
-
-// Home (with filters)
+// -------------------- HOME + FILTERS --------------------
 app.get("/", (req, res) => {
   const properties = loadJSON(propertyFile);
-  const blogs = loadJSON(blogFile);   // ✅ ADD THIS LINE
+  const blogs = loadJSON(blogFile);
 
-  const cityFilter = req.query.city || "";
-  const filtered =
-    cityFilter.trim() !== ""
-      ? properties.filter((p) =>
-        p.location.toLowerCase().includes(cityFilter.toLowerCase())
-      )
-      : properties;
+  const cityFilter = (req.query.city || "").trim();
+  const typeFilter = (req.query.listingType || "").trim().toLowerCase(); // "sale" | "rent" | ""
 
-  const uniqueCities = [...new Set(properties.map((p) => p.location))];
+  let filtered = properties;
+  if (cityFilter) {
+    filtered = filtered.filter((p) =>
+      (p.location || "").toLowerCase().includes(cityFilter.toLowerCase())
+    );
+  }
+  if (typeFilter) {
+    filtered = filtered.filter(
+      (p) => (p.listingType || "Sale").toLowerCase() === typeFilter
+    );
+  }
+
+  const uniqueCities = [...new Set(properties.map((p) => p.location).filter(Boolean))];
 
   res.render("index", {
     properties: filtered,
     uniqueCities,
     cityFilter,
     session: req.session,
-    blogs,   // ✅ now it’s defined
+    blogs,
   });
 });
 
-// Add Property Form
-app.get("/add", (req, res) => {
-  res.render("add-property");
-});
-
-// Handle Property POST (with photo)
-app.post("/add", upload.array("photos", 6), (req, res) => {
-  if (!req.session.user) return res.redirect("/login");
-
-  const { title, type, price, location, description, listingType } = req.body;
-  const photos = req.files.map(f => "/uploads/" + f.filename);
-
+// Quick views for Buy/Rent pages
+app.get("/buy", (req, res) => {
   const properties = loadJSON(propertyFile);
-  properties.push({
-    id: uuidv4(),
-    title,
-    type,
-    price,
-    location,
-    description,
-    listingType: listingType || "Sale",
-    photos, // store all uploaded photos
-    mainPhoto: photos[0] || "/images/property.jpg", // fallback
-    userId: req.session.user.id,
-    userName: req.session.user.name,
-    date: new Date().toISOString(),
-  });
-
-  saveJSON(propertyFile, properties);
-  res.redirect("/dashboard");
+  const saleProps = properties.filter(
+    (p) => (p.listingType || "Sale").toLowerCase() === "sale"
+  );
+  res.render("listings", { title: "Properties for Sale", properties: saleProps });
 });
 
-// Property Details
-app.get("/property/:id", (req, res) => {
+app.get("/rent", (req, res) => {
   const properties = loadJSON(propertyFile);
-  const property = properties.find((p) => p.id === req.params.id);
-  if (!property) return res.status(404).send("Property not found");
-  res.render("property-details", { property });
+  const rentProps = properties.filter(
+    (p) => (p.listingType || "").toLowerCase() === "rent"
+  );
+  res.render("listings", { title: "Properties for Rent", properties: rentProps });
 });
 
-// ========== ADMIN ==========
-app.get("/admin/login", (req, res) => res.render("admin-login", { error: null }));
-app.post("/admin/login", (req, res) => {
-  const { username, password } = req.body;
-  if (username === "admin" && password === "1234") {
-    req.session.admin = true;
-    return res.redirect("/admin/dashboard");
-  }
-  res.render("admin-login", { error: "Invalid credentials" });
-});
-app.get("/admin/dashboard", (req, res) => {
-  if (!req.session.admin) return res.redirect("/admin/login");
-  res.render("admin-dashboard", { properties: loadJSON(propertyFile) });
-});
-app.get("/admin/delete/:id", (req, res) => {
-  if (!req.session.admin) return res.redirect("/admin/login");
-  const props = loadJSON(propertyFile).filter((p) => p.id !== req.params.id);
-  saveJSON(propertyFile, props);
-  res.redirect("/admin/dashboard");
-});
-
-// ========== BLOGS ==========
+// -------------------- BLOGS --------------------
 app.get("/blogs", (req, res) => {
   const blogs = loadJSON(blogFile);
   res.render("blogs", { blogs });
@@ -394,7 +297,91 @@ app.get("/blog/:id", (req, res) => {
   res.render("blog-details", { blog });
 });
 
-// ========== STATIC PAGES ==========
+// -------------------- ADMIN --------------------
+app.get("/admin/login", (req, res) => res.render("admin-login", { error: null }));
+app.post("/admin/login", (req, res) => {
+  const { username, password } = req.body;
+  if (username === "admin" && password === "1234") {
+    req.session.admin = true;
+    return res.redirect("/admin/dashboard");
+  }
+  res.render("admin-login", { error: "Invalid credentials" });
+});
+
+app.get("/admin/dashboard", (req, res) => {
+  if (!req.session.admin) return res.redirect("/admin/login");
+  res.render("admin-dashboard", { properties: loadJSON(propertyFile) });
+});
+
+app.get("/admin/delete/:id", (req, res) => {
+  if (!req.session.admin) return res.redirect("/admin/login");
+  const props = loadJSON(propertyFile).filter((p) => p.id !== req.params.id);
+  saveJSON(propertyFile, props);
+  res.redirect("/admin/dashboard");
+});
+
+// Excel import (form)
+app.get("/admin/import", (req, res) => {
+  if (!req.session.admin) return res.redirect("/admin/login");
+  res.render("admin-import", { success: null, error: null });
+});
+
+// Excel import (handler)
+app.post("/admin/import", uploadExcel.single("excelFile"), (req, res) => {
+  if (!req.session.admin) return res.redirect("/admin/login");
+  try {
+    const workbook = xlsx.readFile(req.file.path);
+    const sheetName = workbook.SheetNames[0];
+    const rows = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+    let properties = loadJSON(propertyFile);
+    let added = 0;
+
+    rows.forEach((row) => {
+      // Expected columns: Title, Type, ListingType, Price, Location, Description, Photo
+      if (row.Title && row.Price && row.Location) {
+        const listingType = (row.ListingType || "Sale").toString();
+        const photoPath = row.Photo && String(row.Photo).trim()
+          ? String(row.Photo).trim()
+          : "/images/property.jpg";
+
+        properties.push({
+          id: uuidv4(),
+          title: String(row.Title),
+          type: row.Type ? String(row.Type) : "Apartment",
+          listingType,
+          price: Number(row.Price),
+          location: String(row.Location),
+          description: row.Description ? String(row.Description) : "",
+          photos: photoPath.includes(",")
+            ? photoPath.split(",").map((p) => p.trim())
+            : [photoPath],
+          mainPhoto: photoPath.includes(",")
+            ? photoPath.split(",").map((p) => p.trim())[0]
+            : photoPath,
+          date: new Date().toISOString(),
+        });
+        added++;
+      }
+    });
+
+    saveJSON(propertyFile, properties);
+    fs.unlinkSync(req.file.path); // cleanup temp upload
+
+    res.render("admin-import", {
+      success: `${added} properties imported successfully.`,
+      error: null,
+    });
+  } catch (err) {
+    console.error(err);
+    res.render("admin-import", {
+      success: null,
+      error: "Error reading Excel file. Please check format.",
+    });
+  }
+});
+
+// -------------------- STATIC PAGES --------------------
 app.get("/about", (req, res) => res.render("about"));
 app.get("/contact", (req, res) => res.render("contact", { success: false }));
 app.post("/contact", (req, res) => {
@@ -403,12 +390,13 @@ app.post("/contact", (req, res) => {
 });
 app.get("/terms", (req, res) => res.render("terms"));
 app.get("/privacy", (req, res) => res.render("privacy"));
-//Global 404 
 
-
+// -------------------- 404 HANDLERS --------------------
+// Property-specific not found view is rendered in routes above as "property-notfound"
+// Global 404 (catch-all)
 app.use((req, res) => {
   res.status(404).render("404", { url: req.originalUrl });
 });
 
-// ========== START ==========
+// -------------------- START SERVER --------------------
 app.listen(PORT, () => console.log(`✅ Running on http://localhost:${PORT}`));

@@ -1,28 +1,64 @@
 <h2 class="mb-4">Available Properties</h2>
-<!-- HERO SECTION -->
-<section class="hero-section text-center text-light d-flex align-items-center justify-content-center"
-  style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-  url('/images/hero-bg.jpg') center/cover no-repeat; height: 70vh;">
-  <div class="container">
-    <h1 class="display-4 fw-bold mb-3">Find Your Dream Property</h1>
-    <p class="lead mb-4">Buy, sell or rent properties easily and securely.</p>
+<!-- HERO SECTION – Bootstrap Carousel with Filter -->
+<div id="heroCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="4000">
+  <div class="carousel-inner rounded shadow-lg">
 
-    <!-- Location Filter Form -->
-    <form method="GET" action="/" class="row g-2 justify-content-center">
-      <div class="col-md-3">
-        <select name="city" class="form-select">
-          <option value="">All Locations</option>
-          <% uniqueCities.forEach(city => { %>
-            <option value="<%= city %>" <%= city === cityFilter ? "selected" : "" %>><%= city %></option>
-          <% }) %>
-        </select>
+    <!-- Slide 1 -->
+    <div class="carousel-item active">
+      <img src="/images/hero1.jpg" class="d-block w-100" style="height:480px;object-fit:cover;">
+      <div class="carousel-caption d-flex flex-column align-items-center justify-content-center bg-dark bg-opacity-50 rounded p-4" style="bottom:40px;">
+        <h2 class="fw-bold text-white">Find Your Perfect Property</h2>
+        <p>Search for homes and rentals across Telangana</p>
+
+        <!-- Filter Form -->
+        <form action="/" method="GET" class="row g-2 justify-content-center mt-3" style="max-width:700px;">
+          <div class="col-md-5">
+            <input type="text" name="city" class="form-control" placeholder="Enter city or location" value="<%= cityFilter %>">
+          </div>
+          <div class="col-md-3">
+            <select name="listingType" class="form-select">
+              <option value="">All Types</option>
+              <option value="Sale" <%= cityFilter==='Sale'?'selected':'' %>>For Sale</option>
+              <option value="Rent" <%= cityFilter==='Rent'?'selected':'' %>>For Rent</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-warning fw-semibold w-100 text-dark">Search</button>
+          </div>
+        </form>
       </div>
-      <div class="col-md-2">
-        <button class="btn btn-warning fw-semibold">Search</button>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="carousel-item">
+      <img src="/images/hero2.jpg" class="d-block w-100" style="height:480px;object-fit:cover;">
+      <div class="carousel-caption bg-dark bg-opacity-50 rounded p-4">
+        <h2 class="fw-bold text-white">Apartments for Rent</h2>
+        <p>Affordable spaces with modern amenities</p>
+        <a href="/rent" class="btn btn-warning text-dark">View Rentals</a>
       </div>
-    </form>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="carousel-item">
+      <img src="/images/hero3.jpg" class="d-block w-100" style="height:480px;object-fit:cover;">
+      <div class="carousel-caption bg-dark bg-opacity-50 rounded p-4">
+        <h2 class="fw-bold text-white">Buy Your Dream Home</h2>
+        <p>Verified listings across Hyderabad, Nizamabad, Warangal</p>
+        <a href="/buy" class="btn btn-primary">Browse Properties</a>
+      </div>
+    </div>
+
   </div>
-</section>
+
+  <!-- Carousel Controls -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
 
 <!-- FEATURED PROPERTIES -->
 <section class="py-5">
